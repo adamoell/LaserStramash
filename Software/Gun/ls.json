@@ -1,0 +1,28 @@
+{
+    "Game": {
+        "version": "0.0.1"
+    },
+    "Hardware": {
+        "identifier": "B4PjSL7l",
+        "ir_recv_pin": "23",
+        "NB_NB_NB": "fire and reload are labelled the opposite way around!",
+        "fire_pin": "26",
+        "reload_pin": "27",
+        "laser_pin": "5",
+        "ir_send_pin": "4",
+        "rgb_pin": "18",
+        "rgb_num_pixels": "1",
+        "laser_brightness": "128",
+        "gun_sensor_id": 0,
+        "gun_sensor_name": "Gun Sensor"
+    },
+    "Player": {
+        "team_id": "0101",
+        "player_id": "0101"
+    },
+    "Network": {
+        "wifi_ssid": "Oellermann-Study",
+        "wifi_key": "PiercedForOurTransgressions",
+        "mqtt_server_address": "192.168.1.2"
+    }
+}

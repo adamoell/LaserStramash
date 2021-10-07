@@ -652,14 +652,30 @@ module batt_cover_stiffener() {
   }
 }
 
+module batt_cover_finger_cutout() {
+  // half-moon cutout to allow easier removal of the panel
+
+  finger_cutout_diam = 8;
+  finger_cutout_height = 10;
+  
+  z_off = -butt_length + grip_base_thickness - batt_cover_ylip + batt_cover_panel_shrink;
+
+  translate([-grip_width/2,-(grip_thickness/2)-0.001,z_off]) 
+    rotate([-90,0,0])
+      cylinder(d=finger_cutout_diam, h=finger_cutout_height);
+}
+
 module batt_cover_panel() {
   // panel that sits in batt_cover_recess()
+
+
   
   x_off = -(grip_width/2) - (bc_width/2);
   z_off = -butt_length + grip_base_thickness - batt_cover_ylip + batt_cover_panel_shrink;
   
   // rotate to sit nicely on the build plate
   rotate([90,0,0]) {
+    
     difference() {
       translate([x_off,-(grip_thickness/2),z_off]) {
         cube([bc_width, batt_cover_thickness, bc_height]);
@@ -668,6 +684,8 @@ module batt_cover_panel() {
       
       translate([0,-1,0])
         batt_screwholes();
+
+      batt_cover_finger_cutout();
     }
     
   }
@@ -687,5 +705,5 @@ Just uncomment the component you want
 *************************************************************************************/
 //sidepanel();
 //barrel();
-grip();
-//batt_cover_panel();
+//grip();
+batt_cover_panel();

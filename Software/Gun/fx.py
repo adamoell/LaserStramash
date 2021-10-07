@@ -32,6 +32,9 @@ PURPLE = (255,0,255)
 CYAN = (0,255,255)
 BROWN = (32,10,0) # (64,20,0)
 
+FORWARD = 1
+BACKWARD = -1
+
 from time import sleep
 from machine import Pin, PWM
 import sys, _thread, time
@@ -543,6 +546,44 @@ class RGB(FX_Base):
             self.fx_busy = False
             self.update()
 
+    def _rainbow_cycle_all(self, duration, frequency, lastfx):
+        """
+        Cycles through the rainbow (red > green > blue) a specified number of times.
+
+        duration: the time (seconds) to take for the effect
+        cycles: the number of times to cycle through the full rainbow.
+        frequency: the number of times/second the RGB is updated
+        lastfx: indicates if this is the 'outer' effect - if true, self.fx_busy is turned Off at the end.
+        """
+        self.fx_busy = True
+
+        ctr = 0
+
+        j = 0
+
+        duration_ms = duration * 1000
+        start = time.ticks_ms()
+        end = time.ticks_add(start, duration_ms)
+        now = start
+
+        wait = 1/frequency
+        while (now < end):
+            for i in range(self.num_pixels):
+                rc_index = (i * 256 // self.num_pixels) + j
+                self.np[i] = self._wheel(rc_index & 255)
+            self.np.write()
+            time.sleep(wait)
+            now = time.ticks_ms()
+            j += 1
+            if j > 255:
+                j = 0
+            
+            
+        self._set_all((0,0,0))
+        if lastfx: 
+            self.fx_busy = False
+            self.update()
+
     def _linear_fill(self, duration, direction, start_colour, end_colour, lastfx):
         """
         Sequentially changes the pixels, like a wipe or progress bar effect.
@@ -572,6 +613,29 @@ class RGB(FX_Base):
         """
 
         self.fx_busy = True
+
+        print("BG: ")
+        print(background_colour)
+
+        print("FG: ")
+
+        time_per_pixel = duration / self.num_pixels 
+        # all on 
+        if direction == 1:
+            start = 0
+            step = 1
+            stop = self.num_pixels
+        else:
+            start = self.num_pixels-1
+            step = -1
+            stop = -1
+
+        self._set_all(background_colour)
+        for i in range(start,stop,step):
+            self._set_pixel(pixel_colour,i)
+            sleep(time_per_pixel)
+            self._set_pixel(background_colour,i)
+            
         if lastfx: 
             self.fx_busy = False
             self.update()
@@ -587,7 +651,9 @@ class RGB(FX_Base):
         is the team colour, the 'lit' pixel is black.
         """
         # TODO a quick _linear_pulse as described
-        _thread.start_new_thread(self._blip_all, (0.15, (255,255,0), True))
+        #_thread.start_new_thread(self._blip_all, (0.15, (255,255,0), True))
+        fx_time = 5 # 0.1
+        _thread.start_new_thread(self._linear_pulse, (0.05, FORWARD, self.player.team.colour, RED,True))
     
     def firefail(self):
         """
@@ -604,7 +670,7 @@ class RGB(FX_Base):
         start_colour = (0,0,0)
         end_colour = (0, 0, 0)
 
-        _thread.start_new_thread(self._rainbow_all, (self.reload_time, 5, 100, True))
+        _thread.start_new_thread(self._rainbow_cycle_all, (self.reload_time, 1000, True))
         pass
     def hit(self):
         # TODO: define colours as global constants!

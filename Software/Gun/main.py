@@ -28,9 +28,6 @@ from sensor import Sensor
 from gun import Gun
 from utils import *
 from fx import *
-import math
-
-startup = time.time()
 
 config = Config("ls.json")
 
@@ -56,14 +53,14 @@ laser = Laser(laser_pin, laser_brightness, player)
 
 rgb_pin = config.get_int('Hardware:rgb_pin')
 rgb_num_pixels = config.get_int('Hardware:rgb_num_pixels')
-rgb = RGB(rgb_pin, 1, player)
+rgb = RGB(rgb_pin, rgb_num_pixels, player)
 
 fx = FX()
 fx.add(laser)
 fx.add(rgb)
 player.fx = fx
 
-# TODO: bootup FX
+# TODO: bootup FX 
 
 # setup sensor
 ir_recv_pin = config.get_int('Hardware:ir_recv_pin')
@@ -91,54 +88,25 @@ stramash = StramashClient(id, server_address, wifi_ssid, wifi_key)
 ###############################################################################
 # TEST CODE this stuff should really be done by a Game
 ###############################################################################
-testteam = Team(1, 1, (192, 192, 255), "Test Team")
+testteam = Team(1, 1, (0, 0, 128), "Test Team")
 testgame = "Test Game" # TODO this should be a Game object!
 
-# #player.onstatechanged = rgb.handlestatechange # let the RGB update when player state changes
+#player.onstatechanged = rgb.handlestatechange # let the RGB update when player state changes
 player.assign(testteam)
 player.joingame(testgame)
 player.up()
-# # TODO player.joingame --> gun, sensor
-# # Game hooks sensor.onhit - mark player and gun as dead
-# # ie game logic... probably reload, can_fire, can_reload handled here...
-# # TODO game needs to maintain a list of enemy teams VALIDATED by the Fire method
-# # when the game starts, turn off WiFi.
+# TODO player.joingame --> gun, sensor
+# Game hooks sensor.onhit - mark player and gun as dead
+# ie game logic... probably reload, can_fire, can_reload handled here...
+# TODO game needs to maintain a list of enemy teams VALIDATED by the Fire method
+# when the game starts, turn off WiFi.
 
 ###############################################################################
 # event loop
 print('Starting Event Loop')
-cycles = 0
-firecounter = 0
-reloadcounter = 0
-reloadstart = -100
-
 try:
     while True:
-        now = time.time()
-        runtime = time.time() - startup
-        m, s = divmod(runtime, 60)
-        h, m = divmod(m, 60)
-        
-        # fire every second
-        # don't fire if reloaded < 6 sec ago
-        if (now - reloadstart) >= 6:
-            fx.fire()
-            firecounter += 1
-
-        cycles += 1
-        uptime = 'Up for {:d} secs ({:02d}:{:02d}:{:02d}) - {:d} shots fired, {:d} reloads'.format(runtime,h,m,s, firecounter, reloadcounter)
-        print(uptime)
-        stramash.send('status', uptime)
-
-        # reload every 10 seconds
-        if runtime % 15 == 0:
-            reloadstart =  now
-            fx.reload()
-            #sleep(5)
-            reloadcounter += 1 
-        
         stramash.update() # TODO can we schedule this with a thread in the StramashClient?
-        
         time.sleep(1)
         gc.collect()
 except KeyboardInterrupt:

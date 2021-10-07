@@ -37,7 +37,7 @@ Release History
   0.3: 2021-10-06
     Redid the grip - better parameterisation, longer grip, shallower angle
     Cutout grip for battery, battery mount details
-    TODO: half-moon cutout on batt_cover_panel to make it easier to remove
+    half-moon cutout on batt_cover_panel to make it easier to remove
   0.4: TODO
     move grip hole forward
     move reload btn to top of utility void
@@ -45,8 +45,6 @@ Release History
     IR receiver assembly
     fixing details for diffuser
     diffuser
-  0.5: TODO
-    lens holder from FocusTest_0.1.scad
 */
 
 $fa = 1;

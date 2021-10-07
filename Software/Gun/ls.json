@@ -11,7 +11,7 @@
         "laser_pin": "5",
         "ir_send_pin": "4",
         "rgb_pin": "18",
-        "rgb_num_pixels": "1",
+        "rgb_num_pixels": "9",
         "laser_brightness": "128",
         "gun_sensor_id": 0,
         "gun_sensor_name": "Gun Sensor"

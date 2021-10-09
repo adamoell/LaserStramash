@@ -119,13 +119,13 @@ class Gun:
                     self.fx.fire() # special effects - laser and RGB
                     
                     if self.onfire != None: # optional callback
-                        self.onfire
+                        self.onfire()
                 else:
                     print("fire: no ammo")
                     self.fx.firefail()
                     # out-of ammo callback
                     if self.onoutofammo != None:
-                        self.onoutofammo
+                        self.onoutofammo()
             else: 
                 print("fire: reloading")
         else:
@@ -142,7 +142,7 @@ class Gun:
         dbg("reload: complete, ammo="+str(self.ammo))
 
         if self.onreloadcomplete != None: # optional callback
-            self.onreloadcomplete
+            self.onreloadcomplete()
 
     def _reload(self, arg=None):
         """ 
@@ -158,7 +158,7 @@ class Gun:
                 
                 self.fx.reload() # handle the SFX
                 if self.onreload != None: # optional callback
-                    self.onreload
+                    self.onreload()
 
             else:
                 print("reload: already busy reloading")

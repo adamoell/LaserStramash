@@ -89,13 +89,20 @@ lens_holder_lip = 1;
 flash_suppressor_length = 20;
 
 // RGB diffuser 
-rgb_internal_width = 15;
-rgb_wall = 2;
+rgb_internal_width = 15; // thin: 17 thick:15
+rgb_wall = 2; // thin:1 thick:2
 rgb_external_width = rgb_internal_width + rgb_wall * 2;
 rgb_recess_depth = 2.4;
-rgb_internal_length = 100;
-rgb_external_length = rgb_internal_length + rgb_wall * 2;
-rgb_diffuser_clearance = 0.3;
+rgb_internal_length = 100; // thin:102 thick:100
+ir_receiver_length = 20; // additional length to allow for IR receiver
+rgb_external_length = rgb_internal_length + rgb_wall * 2 + ir_receiver_length;
+rgb_diffuser_clearance = 0.3; // increased from 0.2
+ir_recv_width = 6.8; // 6.8 for VS1838B, 6.1 for TSOP4438 
+ir_recv_height = 8.0; // excl legs 8.0 for VS1838B, 6.8 for TSO4438
+ir_recv_depth = 3.5; // excl bump 3.5 for VS1838B, 4.0 for TSOP4438
+ir_recv_bumpdepth = 1.7; // 1.7 for VS1838B, 1.6 for TSOP4438  
+ir_recv_bumpwidth = 4.2; // 4.2 for VS1838B, 4.2 for TSOP 4438 
+ir_recv_rgb_clearance = 0.2;
 
 // grip
 grip_thickness=21;
@@ -776,9 +783,6 @@ module batt_cover_panel() {
 RGB Diffuser
 *************************************************************************************/
 module diffuser(length, width, recess_depth) {
-  echo("length");
-  echo(length);
-
   difference() {
     hull() { // the main body
       translate([width/2,0,0])
@@ -802,13 +806,42 @@ module diffuser(length, width, recess_depth) {
     }
 }
 
+module ir_receiver_cutout() {
+  // cutout to fit the IR received
+  width = ir_recv_width + ir_recv_rgb_clearance;
+  depth = ir_recv_depth + ir_recv_rgb_clearance;
+  height = ir_recv_height + ir_recv_rgb_clearance;
+  bump_d = ir_recv_bumpwidth + ir_recv_rgb_clearance;
+
+  translate([ir_receiver_length/2,-width/2,0])
+  union() {
+    cube([depth, width, height]);
+    translate([0,width/2,0])
+      cylinder(d=bump_d, h=height);
+    
+  }
+
+  w = rgb_internal_width-rgb_diffuser_clearance;
+  translate([rgb_wall,0,-rgb_recess_depth+0.0])
+    hull() {
+      
+      translate([w/2,0,0])
+        cylinder(d=w, h=rgb_recess_depth+0.1);
+      translate([rgb_internal_length-(rgb_diffuser_clearance*2)-w/2 + ir_receiver_length, 0, 0])
+        cylinder(d=w, h=rgb_recess_depth+0.1);
+    }
+}
+
 module rgb_diffuser() {
+  // the complete part
   xclear = rgb_diffuser_clearance * 2;
+  
   difference() {
     translate([rgb_diffuser_clearance, 0, 0])
       diffuser(rgb_external_length-(rgb_diffuser_clearance*2), rgb_external_width-rgb_diffuser_clearance, rgb_recess_depth);
-    translate([rgb_wall+rgb_diffuser_clearance,0,-0.01])
+    translate([rgb_wall+rgb_diffuser_clearance+ir_receiver_length,0,-0.01])
       diffuser(rgb_internal_length-(rgb_diffuser_clearance*2), rgb_internal_width-rgb_diffuser_clearance, rgb_recess_depth);
+    ir_receiver_cutout();
   }
 }
 
@@ -839,5 +872,5 @@ Just uncomment the component you want
 //ir_recv_holder();
 //grip();
 //batt_cover_panel();
-//rgb_diffuser();
-lens_holder();
+rgb_diffuser();
+//lens_holder();

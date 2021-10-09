@@ -1,4 +1,4 @@
-# Laser Stramash: the openest, coolest laser tag system
+# Laser Stramash: weapons-grade Free Software laser tag system.
 # Copyright (C) 2021 Adam Oellermann
 # adam@oellermann.com
 # ----------------------------------------------------------------------
@@ -117,7 +117,6 @@ class StramashClient:
         topic: MQTT topic
         msg: MQTT message
         """
-        # TODO convert bytes to string
         topic = topic.decode('utf-8')
         msg = msg.decode('utf-8')
         dbg('From MQTT: ' + topic + ":" + msg)
@@ -131,7 +130,7 @@ class StramashClient:
             handler = self.topic_handlers[topic]
             handler(topic, msg)
         else:
-            # TODO: log, raise exception - invalid message
+            # Invalid message - log, raise exception
             dbg("Unexpected topic received from server")
             raise StramashProtocolError("An unexpected topic was received from the server.")
             
@@ -187,7 +186,7 @@ class StramashClient:
     def _gamejoined(self, topic, msg):
         print("stramashclient: _gamejoined")
         # TODO: stramash/player/<playerid>/gamejoined - create the appropriate Game
-        # object
+        # object and feed it gun, fx, player
         
         # TODO: set these topic names and subscribe to them
         # TODO append to self.topic_handlers 

@@ -650,9 +650,8 @@ class RGB(FX_Base):
         RGB effect for when the gun is fired. A quick linear pulse, background
         is the team colour, the 'lit' pixel is black.
         """
-        # TODO a quick _linear_pulse as described
-        #_thread.start_new_thread(self._blip_all, (0.15, (255,255,0), True))
-        fx_time = 5 # 0.1
+        # a quick _linear_pulse as described
+        fx_time = 0.05
         _thread.start_new_thread(self._linear_pulse, (0.05, FORWARD, self.player.team.colour, RED,True))
     
     def firefail(self):
@@ -673,11 +672,9 @@ class RGB(FX_Base):
         _thread.start_new_thread(self._rainbow_cycle_all, (self.reload_time, 1000, True))
         pass
     def hit(self):
-        # TODO: define colours as global constants!
-        black = (0,0,0)
         _thread.start_new_thread(self._fade_inout_all_log, (1, self.player.team.colour, BROWN, 50, True))
     def powerup(self):
-        # TODO
+        # TODO: implement powerup sfx - not needed for prototype?
         pass
     def activate(self):
         _thread.start_new_thread(self._fade_all_log, (1, BLACK, self.player.team.colour, 50, True, False))
@@ -686,14 +683,13 @@ class RGB(FX_Base):
         _thread.start_new_thread(self._fade_all, (1, self.player.team.colour, BLACK, 50, True))
         pass
     def shield(self):
-        # TODO
+        # TODO: implement shield SFX - pulsating with white/team colour?
         pass
     def unshield(self):
-        # TODO
+        # TODO: implement unshield SFX
         pass
     
     def handlestatechange(self, state):
-        print("handlestatechange")
         self.update()
 
     def update(self):

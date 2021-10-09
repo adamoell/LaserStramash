@@ -55,6 +55,7 @@ class Gun:
 
         self.onfire = None # set this to get called back when the fire button is pressed
         self.onreload = None # set this to get called back when the reload button is pressed
+        self.onoutofammo = None # set this to get called back when the gun is out of ammo
 
         # configure hardware
         self.activate_buttons(fire_pin, reload_pin)
@@ -122,7 +123,9 @@ class Gun:
                 else:
                     print("fire: no ammo")
                     self.fx.firefail()
-                    # TODO out-of ammo callback?
+                    # out-of ammo callback
+                    if self.onoutofammo != None:
+                        self.onoutofammo
             else: 
                 print("fire: reloading")
         else:
@@ -138,8 +141,8 @@ class Gun:
         self.ammo = self.max_ammo
         dbg("reload: complete, ammo="+str(self.ammo))
 
-        if self.onreload != None: # optional callback
-            self.onreload
+        if self.onreloadcomplete != None: # optional callback
+            self.onreloadcomplete
 
     def _reload(self, arg=None):
         """ 
@@ -154,6 +157,9 @@ class Gun:
                 _thread.start_new_thread(self._reload_activate, ())
                 
                 self.fx.reload() # handle the SFX
+                if self.onreload != None: # optional callback
+                    self.onreload
+
             else:
                 print("reload: already busy reloading")
         else:

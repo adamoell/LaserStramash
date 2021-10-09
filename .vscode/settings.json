@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "../micropython-stubs/stubs/micropython-esp32-1_16"
+    ],
+    "python.analysis.extraPaths": [
+        "../micropython-stubs/stubs/micropython-esp32-1_16"
+    ]
+}

@@ -76,6 +76,14 @@ button_hole_diameter = 13; // reload button
 side_panel_thickness_min = 0.75;
 side_panel_thickness_max = 6;
 
+// lens holder
+lens_diameter = 22;
+lens_holder_thickness = 2;
+lens_holder_clearance = 0.3;
+lens_holder_length = 10;
+lens_holder_lip = 1;
+flash_suppressor_length = 20;
+
 // RGB diffuser 
 rgb_internal_width = 15;
 rgb_wall = 2;
@@ -131,7 +139,7 @@ fire_void_width = 18;
 fire_button_zoffset = 12;
 
 // optics
-optic_diameter = 22; // exactly matches lens diameter
+optic_diameter = lens_diameter; // exactly matches lens diameter
 optic_length = 22.0; // was 19.4, measure at 22.4
 lensholder_diameter = 2;
 optic_thickness = 2;
@@ -345,7 +353,36 @@ module barrel() {
 }
  
 
+/************************************************************************************
+LENS HOLDER
+*************************************************************************************/
+module lens_holder() {
+  // fits over the optics 'muzzle' to hold the lens in place
+  lens_holder_diameter = lens_diameter + (lens_holder_thickness * 2) + lens_holder_clearance;
  
+  // sleeve
+  difference() {
+    cylinder(d=lens_holder_diameter, h=lens_holder_length);
+    translate([0,0,-0.01])
+    cylinder(d=lens_diameter + lens_holder_clearance, h=lens_holder_length+0.02);
+  }
+  
+  // lip
+  difference() {
+    cylinder(d=lens_holder_diameter, h=lens_holder_thickness);
+    translate([0,0,-0.01])
+    cylinder(d=lens_diameter - (lens_holder_lip*2), h=lens_holder_length+0.02);
+  }
+  
+  // flash suppressor
+  flash_suppressor_id = lens_diameter + lens_holder_clearance;
+  translate([0,0,-flash_suppressor_length + 0.01])
+  difference() {
+    cylinder(d=lens_holder_diameter, h=flash_suppressor_length);
+    translate([0,0,-0.01])
+      cylinder(d1=flash_suppressor_id, d2=(flash_suppressor_id-lens_holder_lip*2), h=flash_suppressor_length+0.02);
+  }
+}
  
 
 /************************************************************************************
@@ -794,8 +831,9 @@ MAIN
 Just uncomment the component you want
 *************************************************************************************/
 //sidepanel();
-barrel();
+//barrel();
 //ir_recv_holder();
 //grip();
 //batt_cover_panel();
 //rgb_diffuser();
+lens_holder();

@@ -70,9 +70,6 @@ def inttohexstring(val, width=4):
     return '{:0>{w}}'.format(s, w=width)
 
 def reset(reason, type):
-    # TODO:
-    # Goodbye FX, and then shutdown...
-    
     if type == "SOFT":
         dbg("Soft Reset: "+reason)
         sys.exit() # soft reset

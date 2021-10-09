@@ -1,4 +1,4 @@
-# Laser Stramash: the openest, coolest laser tag system
+# Laser Stramash: weapons-grade Free Software laser tag system.
 # Copyright (C) 2021 Adam Oellermann
 # adam@oellermann.com
 # ----------------------------------------------------------------------

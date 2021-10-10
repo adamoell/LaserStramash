@@ -112,7 +112,7 @@ grip_joint_xwall=8; // thickness of front (pierced by btn) and back wall
 grip_joint_void_length = grip_joint_length-grip_joint_xwall;
 grip_joint_void_thickness = 18;
 grip_back_offset=20;
-grip_socket_clearance = 0.5;
+grip_socket_clearance = 0.4;
 grip_angle = 18; // grip angle in degrees
 grip_width = 32; // was 36.5
 grip_height = 120;
@@ -295,23 +295,24 @@ module grip_socket() {
 }
  
 module ir_recv_hole() {
-
-  translate([front_skin + ir_recv_socket_diam,barrel_height+0.05,barrel_thickness/2])
+  //xoff = front_skin; // + ir_recv_socket_diam
+  xoff = (ir_receiver_length*0.35) + pcb_void_length - rgb_external_length + front_skin * 1.5 + (ir_recv_socket_diam/2);
+  translate([xoff,barrel_height+0.05,barrel_thickness/2])
     rotate([90,0,0])
       cylinder(d=ir_recv_socket_diam,h=barrel_skin_thickness+0.1);
 }
 
-module ir_recv_holder() {
-  ir_recv_slot_width = 8;
-  ir_recv_slot_depth = 2;
-  ir_recv_clearance = 0.3; // friction fit...
+// module ir_recv_holder() {
+//   ir_recv_slot_width = 8;
+//   ir_recv_slot_depth = 2;
+//   ir_recv_clearance = 0.3; // friction fit...
 
-  difference() {
-    cylinder(d=ir_recv_socket_diam-ir_recv_clearance,h=barrel_skin_thickness+0.1);
-    translate([-ir_recv_slot_depth/2,-ir_recv_slot_width/2,-0.01])
-      cube([ir_recv_slot_depth, ir_recv_slot_width, barrel_skin_thickness+0.2]);
-  }
-}
+//   difference() {
+//     cylinder(d=ir_recv_socket_diam-ir_recv_clearance,h=barrel_skin_thickness+0.1);
+//     translate([-ir_recv_slot_depth/2,-ir_recv_slot_width/2,-0.01])
+//       cube([ir_recv_slot_depth, ir_recv_slot_width, barrel_skin_thickness+0.2]);
+//   }
+// }
 
 module barrel() {
   difference() {
@@ -863,14 +864,22 @@ function opp_given_adj(a,angle) = a * tan(angle);
 function hyp_given_adj(a,angle) = a / cos(angle);
 function adj_given_hyp(h,angle) = h * cos(angle);
 
+module mounted_diffuser() {
+  xoff = pcb_void_length - rgb_external_length + front_skin * 1.5;
+  translate([xoff,barrel_height,barrel_thickness/2])
+    rotate([-90,0,0])
+      rgb_diffuser();
+}
+
 /************************************************************************************
 MAIN
 Just uncomment the component you want
 *************************************************************************************/
 //sidepanel();
-//barrel();
+barrel();
 //ir_recv_holder();
 //grip();
 //batt_cover_panel();
-rgb_diffuser();
+//rgb_diffuser();
+%mounted_diffuser();
 //lens_holder();

@@ -2,7 +2,7 @@
 
 LaserStramash uses MQTT to pass messages between guns and servers. 
 
-TODO example message workflow.
+TODO: example message workflow.
 
 ## Topic Naming Convention
 
@@ -11,7 +11,7 @@ traffic to coexist comfortable with other traffic sharing the MQTT
 server, and also makes it easy for software to subscribe to all
 Stramash-related messages.
 
-Almost all topics have the game ID as the next level in the topic:
+Most topics have the game ID as the next level in the topic:
 
     stramash/<gameid>/<topic>
 
@@ -95,45 +95,78 @@ actually be rendered as follows:
 
 ### Game-Related Messages
 
-TODO: reformat these nasty tables
+**New Game**
 
-    +-----------------------+-----------------------+-----------------------+
-    | Topic                 | **Message Format**    | Notes                 |
-    +-----------------------+-----------------------+-----------------------+
-    | Game-Related:         |                       |                       |
-    | Requests To Server    |                       |                       |
-    +-----------------------+-----------------------+-----------------------+
-    | stramash/newgame      | {                     | Requests the creation |
-    |                       |                       | of a new game.        |
-    |                       | \"name\": \<game      |                       |
-    |                       | name\>,               | Requests creation of  |
-    |                       |                       | a new game:name: the  |
-    |                       | \"type\": \<game type | human name of the     |
-    |                       | ffa\|nup\|br etc\>,   | game                  |
-    |                       |                       |                       |
-    |                       | \"maxtime\": \<max    | **type**: game type   |
-    |                       | time hh:mm:ss\>       | (eg ffa, nup, br etc) |
-    |                       |                       |                       |
-    |                       | }                     | **maxplayers**: the   |
-    |                       |                       | maximum number of     |
-    |                       | **name**: descriptive | players (0 if no      |
-    |                       | name for the game     | limit)                |
-    |                       |                       |                       |
-    |                       | **type**: the game    |                       |
-    |                       | type (eg              |                       |
-    |                       | free-for-all, n-up,   |                       |
-    |                       | battle royale)        |                       |
-    |                       |                       |                       |
-    |                       | **maxtime**: the      |                       |
-    |                       | maximum length of the |                       |
-    |                       | game (hh:mm:ss)       |                       |
-    +-----------------------+-----------------------+-----------------------+
-    | stramash/gam          | \-                    | Requests deletion of  |
-    | e/\<gameid\>/del*ete* |                       | a game                |
-    +-----------------------+-----------------------+-----------------------+
-    | stramash/             | \-                    | Requests start of a   |
-    | game/\<gameid\>/start |                       | game                  |
-    +-----------------------+-----------------------+-----------------------+
+Topic: `stramash/newgame`
+
+Message Format:
+>    {
+       "name": \<game name\>,  
+        "type": \<game type - ffa|teams|br etc\>,  
+        "maxtime": <max time hh:mm:ss>,        
+    }
+
+Requests the creation of a new game.
+
+    name: descriptive name for the game
+    type: the type of the game to be played
+    maxtime: the maximum duration for the game.
+
+The basic message simply creates the new game, without specifying teams or 
+players. These can be added with the `stramash/<gameid>/addteam` and `stramash/<gameid>/addplayer` messages. However, the entire game can be configured with one message by using the optional `teams` and `players` elements - for example:
+
+>
+    {
+        "name":"test game",  
+        "type":"teams",
+        "maxtime":"00:15:00",
+        "teams":[
+            {
+                "name":"The A Team",
+                "colour":[255,0,0],
+                "players":[
+                    {
+                        "name":"player1",
+                        "gunid":"123"
+                    },
+                    {
+                        "name":"player2",
+                        "gunid":"124"
+                    }
+                ]
+            },
+            {
+                "name":"The B Team",
+                "colour":[0,0,255],
+                "players":[
+                    {
+                        "name":"player3",
+                        "gunid":"125"
+                    },
+                    {
+                        "name":"player4",
+                        "gunid":"126"
+                    }
+                ]
+            }
+        ]
+    }
+
+Note that you can also provide a list of teams without players, or a list of players without teams (in which case you must specify a colour for each player).
+
+**Delete Game**  
+
+Topic: `stramash/<gameid>/delete`
+
+Requests deletion of a game.
+
+**Start Game**
+
+Topic: `game/<gameid>/startgame`
+
+Requests that the game be started.
+
++-----------------------+
     | stramas               | \-                    | Requests end of a     |
     | h/game/\<gameid\>/end |                       | game                  |
     +-----------------------+-----------------------+-----------------------+

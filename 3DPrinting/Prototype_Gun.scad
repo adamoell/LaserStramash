@@ -881,5 +881,5 @@ barrel();
 //grip();
 //batt_cover_panel();
 //rgb_diffuser();
-%mounted_diffuser();
+  //mounted_diffuser(); // just a version of the rgb_diffuser positioned on the barrel
 //lens_holder();

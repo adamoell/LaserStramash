@@ -19,7 +19,7 @@
 # Simple interactive command-line app to get a game launched.
 # ----------------------------------------------------------------------
 
-import os, random
+import os, random, json
 
 game_ready = False 
 teams_ready = False 
@@ -57,6 +57,21 @@ class Team:
         self.colour = ""
         self.teamid = unique_id() # internal identifier
         self.teamnumber = "" # IR code
+    
+    def jsonobj(self):
+        # basic team details
+        jso = {
+            "name": self.name,
+            "colour": colours[self.colour]
+        }
+        # players belonging to this team
+        jso_players = []
+        for key, player in players.items():
+            if player.team.teamid == self.teamid:
+                jso_players.append(player.jsonobj())
+        if len(jso_players) > 0:
+            jso["players"] = jso_players
+        return jso
 
 class Player:
     def __init__(self):
@@ -74,6 +89,16 @@ class Player:
             affiliation = "Colour: [{0}]".format(self.colour)
         summary = "Name: [{0}] {1} Gun: [{2}]".format(self.name, affiliation, self.gunid)
         return summary
+    
+    def jsonobj(self):
+        # TODO basic player details
+        jso = {
+            "name": self.name,
+            "gunid": self.gunid
+        }
+        if self.team == None:
+            jso["colour"] == colours[self.colour]
+        return jso
 
 game = Game()
 teams = {}
@@ -338,10 +363,50 @@ def get_players():
 
 def launch_game():
     global game_ready, teams_ready, players_ready, launched
-    
-    print("Launching Game!")
-    launched = True
 
+    jsongame = {
+        "name": game.name,
+        "type": game.type,
+        "maxtime": game.maxtime
+    }
+
+    jsonteams = []
+    jsonplayers = []
+
+    # add teams and their players
+    if len(teams) > 0:
+        jt = None
+        for key, team in teams.items():
+            obj = team.jsonobj()
+            jsonteams.append(obj)
+        jsongame["teams"] = jsonteams
+    
+    for key, player in players.items():
+        if player.team == None:
+            obj = player.jsonobj()
+            jsonplayers.append(obj)
+    if len(jsonplayers) > 0:
+        jsongame["players"] = jsonplayers
+    
+    
+
+    print(json.dumps(jsongame))
+    input("Press Enter")
+    
+    print("Launching Game...")
+    #launched = True
+
+    # TODO actually send the launch message
+
+
+def launch_test():
+    msg = """
+    {"name": "Test Game", "type": "teams", "maxtime": "00:10:00", "teams": [{"name": "The A Team", "colour": "[255,0,0]", "players": [{"name": "player1", "gunid": "123"}, {"name": "player2", "gunid": "124"}]}, {"name": "The B Team", "colour": "[0,0,255]", "players": [{"name": "player3", "gunid": "125"}, {"name": "player4", "gunid": "126"}]}]}
+    """
+    print(msg)
+    input("Press Enter")
+    # TODO actually send the launch message
+    print("Launching Game...")
 
 def menu():
     cls()
@@ -389,6 +454,12 @@ def menu():
             launch_game_text = 'You cannot launch until Game Parameters and Players have been configured.'
         menu.append(launch_game_text)
         
+        # THIS IS TEST CODE
+        launch['5'] = launch_test
+        menu.append("5. Launch Test")
+
+        # TEST CODE ENDS
+        
         for option in menu:
             print(option)
         
@@ -403,6 +474,7 @@ def farewell():
     print('Thank you for playing the Laser Stramash Prototype!')
     print('================================================================================')
 
+# TODO setup MQTT broker connection
 menu()
 farewell()
 

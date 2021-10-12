@@ -1,177 +1,79 @@
+# Laser Stramash: weapons-grade Free Software laser tag system.
+# Copyright (C) 2021 Adam Oellermann
+# adam@oellermann.com
+# ----------------------------------------------------------------------
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This program is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# ----------------------------------------------------------------------
+# stramash.py
+# Implements the Laser Stramash server
+# ----------------------------------------------------------------------
 import json
+import game
+from utils import *
+from game import *
+from player import *
+from team import *
+from colour import *
+import paho.mqtt.client as mqtt
 
-class Game:
-    # TODO properties
-    # id - short GUID - 
-    #   generate using something like urlsafe_b64encode(os.urandom(6)) (import base64, os)
-    #   or better still
-    #       alphabet = string.ascii_letters + string.digits
-    #       >>> ''.join(random.choices(alphabet, k=8))
-    # name
-    # start_time
-    # players
-    # teams
-    # status: 0=Unstarted, 1=Active, 2=Finished
-    # state (MQTT state message)
+games = {}
 
-    # TODO methods
-    # serialise (JSON)
-    # deserialise (JSON)
-    # save
-    # load
-    # addplayer
-    # deleteplayer
-    # addteam
-    # deleteteam
+# The callback for when the client receives a CONNACK response from the server.
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
 
-    pass
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    client.subscribe("stramash/#")
 
-class Player:    
-    # id
-    @property
-    def id(self):
-        return self._id
-    @id.setter
-    def id(self, id):
-        if not isinstance(id, int):
-            raise TypeError
-        self._id = id
-    
-    # name
-    @property
-    def name(self):
-        return self._name
-    @name.setter
-    def name(self, name):
-        if not isinstance(name, str):
-            raise TypeError
-        self._name = name
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    global games
 
-    # colour
-    @property
-    def colour(self):
-        return self._colour
-    @colour.setter
-    def colour(self, colour):
-        colourOK = (colour == None) or (isinstance(colour, Colour))
-        if not colourOK:
-            raise TypeError
-        self._name = colour
+    print(msg.topic+" "+str(msg.payload))
+    # TODO dispatch the message to the game or whatever...
+    topic = str(msg.topic)
+    data = str(msg.payload.decode("utf-8", "ignore"))
+    if topic == "stramash/newgame":
+        
 
-    def __init__(self, id, name, teamnumber, playernumber):
-        self.id = id
-        self.name = name 
-        self.teamnumber = teamnumber 
-        self.playernumber = playernumber
-        self.colour = None 
-        self.shots = 0
-        self.kills = 0
-        self.ffkills = 0
-        self.deaths = 0
-        self.score = 0
-        # TODO initial status
+        
 
-    # TODO properties
-    # id - a GUID (unique to each gun)
-    # name    
-    # teamnumber (0-255) used for IR code
-    # playernumber (0-255) used for IR code
-    # colour
-    # shots (int)
-    # kills (int)
-    # ffkills (int)
-    # deaths (int)
-    # score (int)
-    # status (up, down, kicked)
-    # state (MQTT state message)
 
-    # TODO methods
-    # handle_fire
-    # handle_kill
-    # handle_death
-    # serialise (JSON)
-    # deserialise (JSON)
-    
-    pass
+def welcome():
+    print('================================================================================')
+    print('Laser Stramash - Prototype')
+    print('Game Server')
+    print('================================================================================')
 
-class Team:
-    # TODO properties
-    # name
-    # id
-    # colour
-    # players
-    # state (MQTT state message)
+# initialise config
+config = Config("server.json")
 
-    # TODO methods
-    # addplayer
-    # deleteplayer
-    # serialise (JSON)
-    # deserialise (JSON)
+# Get started
+welcome() 
 
-    pass
+# Connect to MQTT broker 
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+mqtt_broker = config.get("Network:mqtt_server_address")
+client.connect(mqtt_broker, 1883, 60)
 
-class ColourOutOfRange(Exception):
-    pass
+# Blocking call that processes network traffic, dispatches callbacks and
+# handles reconnecting.
+# Other loop*() functions are available that give a threaded interface and a
+# manual interface.
+client.loop_forever()
 
-class Colour:
-    def __init__(self, name, red, green, blue):
-        self.name = name
-        self.red = red 
-        self.blue = blue 
-        self.green = green 
 
-    # name
-    @property
-    def name(self):
-        return self._name
-    @name.setter
-    def name(self, name):
-        self._name = name
-
-    # red
-    @property
-    def red(self):
-        return self._red
-    @red.setter
-    def red(self, red):
-        if (red > 255) or (red < 0):
-            raise ColourOutOfRange
-        self._red = red
-
-    # green
-    @property
-    def green(self):
-        return self._green
-    @green.setter
-    def green(self, green):
-        if (green > 255) or (green < 0):
-            raise ColourOutOfRange
-        self._green = green
-
-    # blue
-    @property
-    def blue(self):
-        return self._blue
-    @blue.setter
-    def blue(self, blue):
-        if (blue > 255) or (blue < 0):
-            raise ColourOutOfRange
-        self._blue = blue
-
-    # TODO methods
-    def serialise(self):
-        return('["'+self.name+'",'+str(self.red)+','+str(self.green)+','+str(self.blue)+']')
-    
-    @staticmethod
-    def deserialise(serialised_colour):
-        data = json.loads(serialised_colour)
-        colour = Colour(data[0], data[1], data[2], data[3])
-        return colour
-
-    # serialise (JSON)
-    # deserialise (JSON)
-
-if __name__ == '__main__':
-    green_serialised = '["Green",0,255,0]'
-    green = Colour.deserialise(green_serialised)
-    print(green.serialise())

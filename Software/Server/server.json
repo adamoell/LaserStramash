@@ -1,0 +1,8 @@
+{
+    "Game": {
+        "version": "0.0.1"
+    },
+    "Network": {
+        "mqtt_server_address": "<BrokerIPAddress>"
+    }
+}

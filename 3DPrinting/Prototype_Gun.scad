@@ -875,8 +875,8 @@ module mounted_diffuser() {
 MAIN
 Just uncomment the component you want
 *************************************************************************************/
-//sidepanel();
-barrel();
+sidepanel();
+//barrel();
 //ir_recv_holder();
 //grip();
 //batt_cover_panel();

@@ -20,6 +20,8 @@
 # ----------------------------------------------------------------------
 
 import os, random, json
+import paho.mqtt.client as mqtt
+from utils import *
 
 game_ready = False 
 teams_ready = False 
@@ -34,6 +36,7 @@ def unique_id(length=8):
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890"
     return ''.join(random.choices(alphabet, k=length))
 
+# TODO colour options should be in config file
 colours = {
     "Red": "[255,0,0]",
     "Orange": "[255,128,0]",
@@ -104,8 +107,26 @@ game = Game()
 teams = {}
 players = {}
 
+
+# The callback for when the client receives a CONNACK response from the server.
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    client.subscribe("stramash/#")
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
+
+
 def cls():
-    os.system('clear')
+    #os.system('clear')
+    print()
+    print()
+    print()
+    print()
 
 def summary():
     global game_ready, teams_ready, players_ready, launched
@@ -147,6 +168,7 @@ def get_game():
     print("[square brackets], and just pressing Enter will keep it.")
     print()
     game.name = get_value("Game name [{0}]: ".format(game.name), game.name)
+    # TODO game options should be in config file
     game.type = get_value("Game type (ffa|teams|royale) [{0}]: ".format(game.type), game.type)
     game.maxtime = get_value("Game timeout (hh:mm:ss) [{0}]: ".format(game.maxtime), game.maxtime)
     
@@ -390,10 +412,12 @@ def launch_game():
     
     
 
-    print(json.dumps(jsongame))
+    msg = json.dumps(jsongame)
     input("Press Enter")
     
-    print("Launching Game...")
+    # send the newgame message
+    send("stramash/newgame", msg)
+
     #launched = True
 
     # TODO actually send the launch message
@@ -401,12 +425,16 @@ def launch_game():
 
 def launch_test():
     msg = """
-    {"name": "Test Game", "type": "teams", "maxtime": "00:10:00", "teams": [{"name": "The A Team", "colour": "[255,0,0]", "players": [{"name": "player1", "gunid": "123"}, {"name": "player2", "gunid": "124"}]}, {"name": "The B Team", "colour": "[0,0,255]", "players": [{"name": "player3", "gunid": "125"}, {"name": "player4", "gunid": "126"}]}]}
+    {"name": "Test Game", "type": "ffa", "maxtime": "00:10:00", "teams": [{"name": "The A Team", "colour": "[255,0,0]", "players": [{"name": "player1", "gunid": "123"}, {"name": "player2", "gunid": "124"}]}, {"name": "The B Team", "colour": "[0,0,255]", "players": [{"name": "player3", "gunid": "125"}, {"name": "player4", "gunid": "126"}]}]}
     """
     print(msg)
     input("Press Enter")
-    # TODO actually send the launch message
-    print("Launching Game...")
+    # send the newgame message
+    send("stramash/newgame", msg)
+
+def send(topic, data):
+    print("Sending " + topic)
+    client.publish(topic, data)
 
 def menu():
     cls()
@@ -474,7 +502,20 @@ def farewell():
     print('Thank you for playing the Laser Stramash Prototype!')
     print('================================================================================')
 
-# TODO setup MQTT broker connection
+
+# get config
+config = Config("server.json")
+
+# Connect to MQTT broker 
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+mqtt_broker = config.get("Network:mqtt_server_address")
+client.connect(mqtt_broker, 1883, 60)
+
+# enter main event loop
 menu()
+
+# all done!
 farewell()
 

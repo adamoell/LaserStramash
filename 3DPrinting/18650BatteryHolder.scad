@@ -34,14 +34,14 @@ $fs = 0.4;
 /************************************************************************************
 DIMENSIONS
 *************************************************************************************/
-battery_diameter = 18;
-battery_wiggle_room = 1; // added to diameter so batteries don't get stuck
+battery_diameter = 14.5; // 18 for 18650, 14.5 for AA
+battery_wiggle_room = 0.6; // added to diameter so batteries don't get stuck - 1 for 18650, .6 for AA
 separator_thickness = 0.5; // thickness of the division between cells
 base_thickness = 1.5; // thickness of the base
 wall_thickness = 1.5; // thickness of the outer wall
 height = 12; // total height
-rows = 4; // number of rows
-cols = 5; // number of columns
+rows = 2; // number of rows
+cols = 2; // number of columns
 
 module located_cylinder(diam, height, x, y, z) {
   // just places a cylinder in a location

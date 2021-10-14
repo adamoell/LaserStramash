@@ -40,8 +40,8 @@ separator_thickness = 0.5; // thickness of the division between cells
 base_thickness = 1.5; // thickness of the base
 wall_thickness = 1.5; // thickness of the outer wall
 height = 12; // total height
-rows = 2; // number of rows
-cols = 2; // number of columns
+rows = 6; // number of rows
+cols = 8; // number of columns
 
 module located_cylinder(diam, height, x, y, z) {
   // just places a cylinder in a location

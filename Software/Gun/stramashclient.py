@@ -21,9 +21,9 @@
 
 # MQTT testing...
 # Subscribe to all:
-# mosquitto_sub -h <BrokerIPAddress> -t "#" -v
+# mosquitto_sub -h 192.168.1.2 -t "#" -v
 # Send a message:
-# mosquitto_pub -h <BrokerIPAddress> -t <topic> -m <message>
+# mosquitto_pub -h 192.168.1.2 -t <topic> -m <message>
 from wifi import WiFi
 from umqttsimple import *
 from game import Hit

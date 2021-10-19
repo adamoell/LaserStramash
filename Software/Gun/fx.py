@@ -175,7 +175,7 @@ class Laser(FX_Base):
         Fire effect
         """
         super().fire()
-        self.blip(0.15)
+        self.blip(0.25)
     
     def update(self):
         """

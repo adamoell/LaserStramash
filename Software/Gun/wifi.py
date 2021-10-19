@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------
 
 # listen on pc:
-# mosquitto_sub -h <BrokerIPAddress> -t dbg -t hit
+# mosquitto_sub -h 192.168.1.2 -t dbg -t hit
 from time import sleep 
 import machine
 import network

@@ -12,7 +12,7 @@
         "ir_send_pin": "4",
         "rgb_pin": "18",
         "rgb_num_pixels": "9",
-        "laser_brightness": "128",
+        "laser_brightness": "1023",
         "gun_sensor_id": 0,
         "gun_sensor_name": "Gun Sensor"
     },
@@ -21,8 +21,8 @@
         "player_id": "0101"
     },
     "Network": {
-        "wifi_ssid": "<AccessPointName>",
-        "wifi_key": "***REMOVED***",
-        "mqtt_server_address": "<BrokerIPAddress>"
+        "wifi_ssid": "Oellermann-Study",
+        "wifi_key": "********",
+        "mqtt_server_address": "192.168.1.2"
     }
 }

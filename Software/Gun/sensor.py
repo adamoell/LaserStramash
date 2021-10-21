@@ -33,7 +33,7 @@ from machine import Pin, freq
 from ir_rx.print_error import print_error  # Optional print of error codes
 from ir_rx.nec import NEC_8, NEC_16
 from game import Hit
-from utils import inttohexstring
+from utils import inttohexstring, dbg
 
 
 
@@ -77,7 +77,7 @@ class Sensor:
                 friendlyfire = (addr == myteam)
                 if (not friendlyfire) or (not self.excludefriendly): # no friendly fire!
                     self.hits.append(hit)
-                    print("hit: counter=" + str(len(self.hits)))
+                    dbg("hit: counter=" + str(len(self.hits)))
                     self.fx.hit()
                     if self.onhit != None:
                         self.onhit(hit)
@@ -86,10 +86,10 @@ class Sensor:
                     if myplayer != data:
                         if self.onfriendlyfire != None:
                             self.onfriendlyfire(hit)
-                        print("hit: not counting friendly fire")
+                        dbg("hit: not counting friendly fire")
             else:
                 # deal with unhittable player if needed
-                print("hit: not hittable, state="+str(self.player.state))
+                dbg("hit: not hittable, state="+str(self.player.state))
             
             
     def close(self):

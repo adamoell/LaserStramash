@@ -115,7 +115,7 @@ player.up()
 
 ###############################################################################
 # event loop
-print('Starting Event Loop')
+dbg('Starting Event Loop')
 try:
     while True:
         stramash.update() # TODO can we schedule this with a thread in the StramashClient?

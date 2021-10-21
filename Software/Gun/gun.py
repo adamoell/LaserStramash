@@ -26,7 +26,7 @@ from time import sleep
 import _thread
 from fx import *
 from ir_tx.nec import NEC
-
+from utils import dbg
 
 class Gun:
     """
@@ -111,7 +111,7 @@ class Gun:
                 if self.ammo > 0:
                     self.firecounter += 1
                     self.ammo -= 1
-                    print("fire: shots fired="+str(self.firecounter)+"; ammo left="+str(self.ammo))
+                    dbg("fire: shots fired="+str(self.firecounter)+"; ammo left="+str(self.ammo))
                     myteam = self.player.team.team
                     myplayer = self.player.team.player
                     self.send_ir(myteam, myplayer)
@@ -121,15 +121,15 @@ class Gun:
                     if self.onfire != None: # optional callback
                         self.onfire()
                 else:
-                    print("fire: no ammo")
+                    dbg("fire: no ammo")
                     self.fx.firefail()
                     # out-of ammo callback
                     if self.onoutofammo != None:
                         self.onoutofammo()
             else: 
-                print("fire: reloading")
+                dbg("fire: reloading")
         else:
-            print("fire: not allowed, state="+str(self.player.state))
+            dbg("fire: not allowed, state="+str(self.player.state))
 
     def _reload_activate(self):
         """
@@ -152,7 +152,7 @@ class Gun:
         # are we allowed to reload?
         if self.player.canfire:
             if not self.reloading:
-                print("reload: starting...")
+                dbg("reload: starting...")
                 self.reloading = True
                 _thread.start_new_thread(self._reload_activate, ())
                 
@@ -161,8 +161,8 @@ class Gun:
                     self.onreload()
 
             else:
-                print("reload: already busy reloading")
+                dbg("reload: already busy reloading")
         else:
-            print("reload: not allowed, state="+str(self.player.state))
+            dbg("reload: not allowed, state="+str(self.player.state))
 
 

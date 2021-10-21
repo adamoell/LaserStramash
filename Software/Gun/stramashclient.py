@@ -54,10 +54,10 @@ class StramashClient:
         self.game = None # will get set when we get joined
         self.onmessage = None # message handler for MQTT messages received
 
-        print("Connecting to WiFi...")
+        dbg("Connecting to WiFi...")
         self.wifi = WiFi(wifi_ssid, wifi_key)
         self.wifi.connect()
-        print("WiFi connected")
+        dbg("WiFi connected")
     
         self.mqtt_client = MQTTClient(playerid, server)
         self.mqtt_client.set_callback(self.receive)
@@ -65,10 +65,10 @@ class StramashClient:
         # TODO .connect(clean_session=False) ? 
         # https://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages/
         # maybe just on reconnect?
-        print('MQTT connected')
+        dbg('MQTT connected')
 
         self.mqtt_client = None
-        print('MQTT not connected')
+        dbg('MQTT not connected')
 
         # setup a dictionary of topics and their handler methods 
         self.topic_handlers = {
@@ -146,7 +146,7 @@ class StramashClient:
         """
         if self.mqtt_client != None:
             self.mqtt_client.publish(topic, msg)
-            #print('> To MQTT: ' + topic + ":" + msg)
+            #dbg('> To MQTT: ' + topic + ":" + msg)
 
     def update(self):
         """
@@ -184,7 +184,7 @@ class StramashClient:
     # Implement Actions for Server Messages: Pre Game Start
     ############################################################################
     def _gamejoined(self, topic, msg):
-        print("stramashclient: _gamejoined")
+        dbg("stramashclient: _gamejoined")
         # TODO: stramash/player/<playerid>/gamejoined - create the appropriate Game
         # object and feed it gun, fx, player
         
@@ -199,36 +199,36 @@ class StramashClient:
         
 
     def _assigned(self, topic, msg):
-        print("stramashclient: _assigned")
+        dbg("stramashclient: _assigned")
         # TODO: stramash/player/<playerid>/assigned
         # TODO create Team object 
         # TODO player.assign(..)
         # TODO send the team, player to onassigned callback
     
     def _unassigned(self, topic, msg):
-        print("stramashclient: _unassigned")
+        dbg("stramashclient: _unassigned")
         # TODO: stramash/player/<playerid>/assigned
         # TODO null None object
         # TODO player.unassign(..)
         # TODO send the  player to onunassigned callback
 
     def _deleted(self, topic, msg):
-        print("_deleted")
+        dbg("_deleted")
         # TODO FX
         reset("Player Deleted", HARD)
     
     def _kicked(self, topic, msg):
-        print("_kicked")
+        dbg("_kicked")
         # TODO FX
         reset("Kicked by Server", HARD)
 
     def _gamedeleted(self, topic, msg):
-        print("_kicked")
+        dbg("_kicked")
         # TODO FX
         reset("Game Deleted")
 
     def _gamestarted(self, topic, msg):
-        print("_gamestarted")
+        dbg("_gamestarted")
         # TODO: PROTO: turn off network, start game timer, player "up"
 
 
@@ -240,15 +240,15 @@ class StramashClient:
     # - stramash/game/<gameid>/hit
     
     def _up(self, topic, msg):
-        print("_up")
+        dbg("_up")
         # NOT USED IN PROTOTYPE - no network during game
 
     def _down(self, topic, msg):
-        print("_down")
+        dbg("_down")
         # NOT USED IN PROTOTYPE - no network during game
 
     def _gameended(self, topic, msg):
-        print("_gameended")
+        dbg("_gameended")
         # TODO: in prototype, this is not actually a server message
         # but is invoked by the timer thread.
         # Post-prototype, this will ONLY be invoked via a server message.

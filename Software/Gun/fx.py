@@ -614,11 +614,6 @@ class RGB(FX_Base):
 
         self.fx_busy = True
 
-        print("BG: ")
-        print(background_colour)
-
-        print("FG: ")
-
         time_per_pixel = duration / self.num_pixels 
         # all on 
         if direction == 1:
@@ -713,34 +708,29 @@ class RGB(FX_Base):
 
         player: the player object (for access to current state)
         """
-        print("rgb update")
         if not self.fx_busy:
-            print("rgb update: ok")
             if self.player == None:
-                print("No player - set to base colour")
                 self._set_all(self.base_colour)
             elif self.player.team == None:
-                print("No team - set to base colour")
                 self._set_all(self.base_colour)
             else:
                 colour = self.player.team.colour
 
                 # check for state-specific colour changes
                 if self.player.state & UP == 0: # not up, no colour
-                    print("Not UP - set to black")
                     colour = BLACK
 
                 if self.player.state & ALIVE == 0: # not alive, no colour
-                    colour = (0,0,0)
+                    colour = BLACK
                 
                 if self.player.state & KICKED == KICKED: # kicked, no colour
-                    colour = (0,0,0)
+                    colour = BLACK
 
                 if self.player.state & SHIELDED == SHIELDED: # shielded - orange
-                    colour = (255,127,0)
+                    colour = ORANGE
                 self._set_all(colour)
         else:
-            print("rgb update: fx busy")
+            pass
 
     def close(self):
         self._set_all(BLACK)

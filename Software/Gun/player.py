@@ -19,6 +19,8 @@
 # Handles player- and team-related data and functionality.
 # ----------------------------------------------------------------------
 
+from utils import dbg
+
 INGAME = 1
 INTEAM = 2
 UP = 4 
@@ -73,13 +75,13 @@ class Player:
         """
         State has changed, call the onstatechange callback if set
         """
-        print("player state changed, state="+str(self.state))
+        dbg("player state changed, state="+str(self.state))
         self.fx.update()
         if self.onstatechanged != None:
-            print("calling onstatechanged")
+            dbg("calling onstatechanged")
             self.onstatechanged(self.state)
         else:
-            print("no onstatechanged callback")
+            dbg("no onstatechanged callback")
 
     def joingame(self, game):
         """

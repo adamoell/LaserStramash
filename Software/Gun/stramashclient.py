@@ -54,18 +54,18 @@ class StramashClient:
         self.game = None # will get set when we get joined
         self.onmessage = None # message handler for MQTT messages received
 
-        # print("Connecting to WiFi...")
-        # self.wifi = WiFi(wifi_ssid, wifi_key)
-        # self.wifi.connect()
-        # print("WiFi connected")
+        print("Connecting to WiFi...")
+        self.wifi = WiFi(wifi_ssid, wifi_key)
+        self.wifi.connect()
+        print("WiFi connected")
     
-        # self.mqtt_client = MQTTClient(playerid, server)
-        # self.mqtt_client.set_callback(self.receive)
-        # self.mqtt_client.connect()
-        # # TODO .connect(clean_session=False) ? 
-        # # https://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages/
-        # # maybe just on reconnect?
-        # print('MQTT connected')
+        self.mqtt_client = MQTTClient(playerid, server)
+        self.mqtt_client.set_callback(self.receive)
+        self.mqtt_client.connect()
+        # TODO .connect(clean_session=False) ? 
+        # https://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages/
+        # maybe just on reconnect?
+        print('MQTT connected')
 
         self.mqtt_client = None
         print('MQTT not connected')

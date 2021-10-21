@@ -60,7 +60,11 @@ fx.add(laser)
 fx.add(rgb)
 player.fx = fx
 
-# TODO: bootup FX 
+# bootup FX 
+rgb.base_colour = RED
+rgb.bootup()
+time.sleep(1)
+rgb.update()
 
 # setup sensor
 ir_recv_pin = config.get_int('Hardware:ir_recv_pin')
@@ -77,6 +81,8 @@ max_ammo = 10 # should get overridden by game
 reload_time = 5 # should get overridden by game
 gun = Gun(fire_pin, reload_pin, ir_send_pin, fx, player, max_ammo, reload_time)
 
+rgb.base_colour = ORANGE
+rgb.update() 
 dbg('Connecting to server...')
 wifi_ssid = config.get('Network:wifi_ssid')
 wifi_key = config.get('Network:wifi_key')
@@ -84,6 +90,12 @@ server_address = config.get('Network:mqtt_server_address')
 stramash = StramashClient(id, server_address, wifi_ssid, wifi_key)
 # TODO: hook ongamejoined callback from stramash client and use it to 
 # 'save' the game and populate its gun, sensor, player
+
+# indicate network connected
+rgb.base_colour = GREEN
+rgb.connected()
+time.sleep(1)
+rgb.update()
 
 ###############################################################################
 # TEST CODE this stuff should really be done by a Game

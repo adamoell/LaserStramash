@@ -69,6 +69,7 @@ class WiFi:
 
         for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
             ssid = ssid.decode('utf-8')
+            print("Found {0}".format(ssid))
             if ssid == targetssid:
                 print("Found access point!")
                 return True 

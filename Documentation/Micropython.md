@@ -3,10 +3,8 @@
 ## Flash Micropython
 
     sudo esptool.py --port /dev/ttyUSB0 erase_flash
-    sudo esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32-20210902-v1.17.bin
-    sudo esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32-20210922-unstable-v1.17-68-g35fb90bd5.bin
-    sudo esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32-idf4-20210202-v1.14.bin
-
+    sudo esptool.py --chip esp32 --port /dev/ttyUSB1 write_flash -z 0x1000 Firmware/esp32-20210902-v1.17.bin
+    
 
  or sudo screen /dev/ttyUSB0
  sudo picocom -b 115200 /dev/ttyUSB0

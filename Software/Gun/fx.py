@@ -654,12 +654,25 @@ class RGB(FX_Base):
         fx_time = 0.05
         _thread.start_new_thread(self._linear_pulse, (0.05, FORWARD, self.player.team.colour, RED,True))
     
+    def bootup(self):
+        """
+        RGB effect for when the gun boots up. Strobes white for one second
+        """
+        _thread.start_new_thread(self._strobe_all, (10, 1, WHITE, True))
+
+    def connected(self):
+        """
+        RGB effect for when the gun is connected to the network. Strobes green 
+        for one second
+        """
+        _thread.start_new_thread(self._strobe_all, (10, 1, GREEN, True))
+
     def firefail(self):
         """
         RGB effect for when firing fails (eg out of ammo). Strobes red for 
         half a second.
         """
-        _thread.start_new_thread(self._strobe_all, (10, 0.5, (255,0,0), True))
+        _thread.start_new_thread(self._strobe_all, (10, 0.5, RED, True))
         
     def reload(self):
         """
@@ -704,8 +717,11 @@ class RGB(FX_Base):
         if not self.fx_busy:
             print("rgb update: ok")
             if self.player == None:
-                print("No player - set to black")
-                self._set_all(BLACK)
+                print("No player - set to base colour")
+                self._set_all(self.base_colour)
+            elif self.player.team == None:
+                print("No team - set to base colour")
+                self._set_all(self.base_colour)
             else:
                 colour = self.player.team.colour
 

@@ -40,41 +40,41 @@ class WiFi:
         sleep(1)
         self.sta_if.active(True)
 
-        print("Interface active")
+        dbg("Interface active")
         if self.check_ap(self.ssid):
             # connect to access point
             if not self.sta_if.isconnected():
-                print('connecting to AP...')
+                dbg('connecting to AP...')
                 self.sta_if.active(True)
                 self.sta_if.connect(self.ssid, self.key)
                 while not self.sta_if.isconnected():
                     machine.idle()
                     # Do we need a timeout here?
-                print(self.sta_if.ifconfig())
+                dbg(self.sta_if.ifconfig())
             else:
-                print("WLAN already connected")
-                print(self.sta_if.ifconfig())
+                dbg("WLAN already connected")
+                dbg(self.sta_if.ifconfig())
         else:
-            print("Target SSID not found.")
+            dbg("Target SSID not found.")
             reset("Could not connect to network - target SSID is not availble.", HARD)
     
     def check_ap(self, targetssid):
         """
         Check if the given access point exists
         """
-        print("Scanning for access point ["+targetssid+"]...")
+        dbg(f"Scanning for access point [{targetssid}]...")
         
         self.sta_if.active(True)
         networks = self.sta_if.scan()
 
         for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
             ssid = ssid.decode('utf-8')
-            print("Found {0}".format(ssid))
+            dbg(f"Found {ssid}")
             if ssid == targetssid:
-                print("Found access point!")
+                dbg("Found access point!")
                 return True 
         
-        print("Access point not found")
+        dbg("Access point not found")
         return False
 
 

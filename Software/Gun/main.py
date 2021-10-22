@@ -100,7 +100,7 @@ rgb.update()
 ###############################################################################
 # TEST CODE this stuff should really be done by a Game
 ###############################################################################
-testteam = Team(1, 1, (0, 0, 128), "Test Team")
+testteam = Team(2, 2, (128, 0, 0), "Test Team")
 testgame = "Test Game" # TODO this should be a Game object!
 
 #player.onstatechanged = rgb.handlestatechange # let the RGB update when player state changes

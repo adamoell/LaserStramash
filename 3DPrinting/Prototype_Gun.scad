@@ -135,8 +135,8 @@ batt_socket_length = 70;
 batt_spring_channel_width = 4;
 batt_spring_width = 17; // official dim 16.5
 batt_spring_height = 16.5; // official dim 16
-batt_spring_thickness = 0.5;
-batt_spring_retainer = 0.5;
+batt_spring_thickness = 0.65; // was 0.5
+batt_spring_retainer = 0.65; // was 0.5
 batt_spring_plate_thickness = .2+(battery_void_length - batt_clearance - batt_socket_length)/2;
 batt_cover_panel_clearance = 0.2;
 batt_cover_panel_shrink = 0.2; // take this off from every edge
@@ -875,10 +875,10 @@ module mounted_diffuser() {
 MAIN
 Just uncomment the component you want
 *************************************************************************************/
-sidepanel();
+//sidepanel();
 //barrel();
 //ir_recv_holder();
-//grip();
+grip();
 //batt_cover_panel();
 //rgb_diffuser();
   //mounted_diffuser(); // just a version of the rgb_diffuser positioned on the barrel

@@ -156,8 +156,8 @@ lensholder_diameter = 2;
 optic_thickness = 2;
 led_diameter = 5;
 led_clearance = 0.5; // was 0.3
-laserbeam_diam = 5;
-laserbody_diam = 6.8; // measures 6, this works for friction fit
+laserbeam_diam = 4.8; // was 5.0
+laserbody_diam = 6.2; // measures 6, was 6.8, then 6.6, then 6.4 (still too loose) 
 laser_lipdepth = 1;
 
 ir_recv_socket_diam = 10;
@@ -876,9 +876,9 @@ MAIN
 Just uncomment the component you want
 *************************************************************************************/
 //sidepanel();
-//barrel();
+barrel();
 //ir_recv_holder();
-grip();
+//grip();
 //batt_cover_panel();
 //rgb_diffuser();
   //mounted_diffuser(); // just a version of the rgb_diffuser positioned on the barrel
